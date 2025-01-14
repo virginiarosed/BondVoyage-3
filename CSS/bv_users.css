@@ -1,0 +1,331 @@
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src: url('../Fonts/Montserrat-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Gusto-Bold';
+    src: url('../Fonts/Gusto-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Montserrat-Medium';
+    src: url('../Fonts/Montserrat-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url('../Fonts/Montserrat-Bold.ttf') format('truetype');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    font-family: 'Montserrat-Regular', sans-serif;
+    overflow: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #585D27 #FFF0D9;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    border: 3px solid #585D27;
+}
+
+.sidebar {
+    width: 8%;
+    background-color: #f8fff0;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 3px solid #585D27;
+}
+
+.logo {
+    margin-bottom: 1px;
+}
+
+.logo-img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+.menu {
+    list-style-type: none;
+    width: 100%;
+}
+
+.menu li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px 0;
+}
+
+.menu img {
+    max-width: 40px;
+    height: auto;
+    margin-bottom: 5px;
+}
+
+.menu span {
+    font-size: 14px;
+    text-align: center;
+    color: #585D27;
+    font-family: 'Montserrat-Bold', sans-serif;
+}
+
+.menu a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.menu a:hover {
+    opacity: 0.8;
+}
+
+.content {
+    width: 92%;
+    padding: 30px;
+    background-color: #FFF0D9;
+    background-image: url('../Images/bv_contentbg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow-y: auto;
+}
+
+.users-img {
+    max-width: 16%;
+    height: auto;
+    display: block;
+    margin-top: -10px;
+}
+
+.table-container {
+    overflow-x: auto;
+    background-color: #f8fff0;
+    border: 4px solid #585D27;
+    border-radius: 15px;
+    padding: 23px;
+    position: relative;
+    top: 20px;
+    height: 510px; 
+}
+
+#users-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#users-table th, #users-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+#users-table th {
+    background-color: #585D27;
+    color: #f8fff0;
+    font-family: 'Montserrat-Bold', sans-serif;
+}
+
+#users-table tr:nth-child(even) {
+    background-color: #f4f4f4;
+}
+
+#users-table tr:hover {
+    background-color: #ddd;
+}
+
+.menu li.active {
+    background-color: #FFF0D9; 
+    border-radius: 8px; 
+    outline: 2px solid #585D27;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.menu li.active span {
+    color: #585D27; 
+}
+
+.menu li.active img {
+    filter: brightness(1.2);
+}
+
+.menu li:hover {
+    background-color: #e0e5c1;
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+}
+
+.menu li:focus-within {
+    outline: 2px solid #585D27; 
+    background-color: #e8f0d9; 
+    border-radius: 8px;
+    border-radius: 8px;
+}
+
+.controls-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-section {
+    flex: 1;
+    margin-right: 20px;
+    position: relative; 
+}
+
+#search-input {
+    width: 90%;
+    padding: 8px 30px 8px 10px; 
+    font-family: 'Montserrat-Regular', sans-serif;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    outline: none;
+}
+
+#search-input:focus {
+    border-color: #A3C585; 
+    box-shadow: 0 0 8px #A3C585;
+}
+
+#search-icon {
+    position: absolute;
+    right: 45px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #585D27;
+    font-size: 16px;
+}
+
+.date-filter-container {
+    display: flex;
+    align-items: center;
+}
+
+.date-filter-container label {
+    margin-right: 10px;
+}
+
+.date-filter-container input {
+    padding: 5px;
+    font-family: 'Montserrat-Regular', sans-serif;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    outline: none;
+}
+
+.date-filter-container input:focus {
+    border-color: #A3C585; 
+    box-shadow: 0 0 8px #A3C585;
+}
+
+.date-filter-container button {
+    padding: 8px 10px;
+    font-family: 'Montserrat-Medium', sans-serif;
+    border-radius: 5px;
+    border: none;
+    background-color: #585D27;
+    color: #f8fff0;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.date-filter-container button:hover {
+    background-color: #A3C585;
+}
+
+#filter-btn {
+    padding: 8px 10px;
+    font-family: 'Montserrat-Medium', sans-serif;
+    border-radius: 5px;
+    border: none;
+    background-color: #585D27;
+    color: #f8fff0;
+    cursor: pointer;
+    outline: none;
+}
+
+#filter-btn:hover {
+    border-color: #A3C585; 
+    box-shadow: 0 0 8px #A3C585;
+}
+
+.pagination-section {
+    position: absolute; 
+    bottom: 25px; 
+    left: 50%;
+    transform: translateX(-50%); 
+    text-align: center;
+    width: 100%; 
+}
+
+.sort-section {
+    flex: 1;
+    text-align: right;
+}
+
+#sort-select {
+    padding: 8px;
+    font-family: 'Montserrat-Regular', sans-serif;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+#pagination {
+    text-align: center;
+}
+
+#pagination a {
+    padding: 5px 10px; 
+    font-size: 12px;
+    margin: 0 3px;
+    text-decoration: none;
+    background-color: #f8fff0;
+    color: #585D27;
+    border-radius: 4px; 
+    font-family: 'Montserrat-Regular', sans-serif;
+    border: 2px solid transparent; 
+}
+
+#pagination a:hover {
+    background-color: #e0e5c1; 
+}
+
+#pagination a:active {
+    background-color: #ddd; 
+}
+
+#pagination a.active {
+    background-color: #585D27; 
+    color: #f8fff0; 
+    border: 2px solid #585D27; 
+}
+
+#pagination a.inactive {
+    background-color: #f4f4f4;
+    color: #585D27;
+    border: 2px solid #ddd; 
+}
+
+#pagination a:hover:not(.active) {
+    background-color: #e0e5c1; 
+}

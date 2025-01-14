@@ -1,0 +1,239 @@
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src: url('../Fonts/Montserrat-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Gusto-Bold';
+    src: url('../Fonts/Gusto-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Montserrat-Medium';
+    src: url('../Fonts/Montserrat-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Montserrat-Bold';
+    src: url('../Fonts/Montserrat-Bold.ttf') format('truetype');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    font-family: 'Montserrat-Regular', sans-serif;
+    overflow: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #585D27 #FFF0D9;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    border: 3px solid #585D27;
+}
+
+.sidebar {
+    width: 8%;
+    background-color: #f8fff0;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 3px solid #585D27;
+}
+
+.logo {
+    margin-bottom: 1px;
+}
+
+.logo-img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+.menu {
+    list-style-type: none;
+    width: 100%;
+}
+
+.menu li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px 0;
+}
+
+.menu img {
+    max-width: 40px;
+    height: auto;
+    margin-bottom: 5px;
+}
+
+.menu span {
+    font-size: 14px;
+    text-align: center;
+    color: #585D27;
+    font-family: 'Montserrat-Bold', sans-serif;
+}
+
+.menu a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.menu a:hover {
+    opacity: 0.8;
+}
+
+.content {
+    width: 92%;
+    padding: 40px;
+    background-color: #FFF0D9;
+    background-image: url('../Images/bv_contentbg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.image-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch; 
+    background-color: #f8fff0;
+    border: 4px solid #585D27;
+    border-radius: 15px;
+    height: 35vh; 
+    margin-bottom: 40px;
+}
+
+.left-part {
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    padding: 10px;
+    height: 100%; 
+}
+
+.left-part img {
+    max-width: 85%;
+    height: auto;
+}
+
+.right-part {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    padding: 20px;
+    background-color: #585D27;
+    flex-grow: 1; 
+    height: 100%; 
+}
+
+.right-part img {
+    max-width: 100%;
+    height: auto;
+}
+
+.menu li.active {
+    background-color: #FFF0D9; 
+    border-radius: 8px; 
+    outline: 2px solid #585D27;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.menu li.active span {
+    color: #585D27; 
+}
+
+.menu li.active img {
+    filter: brightness(1.2); 
+}
+
+.menu li:hover {
+    background-color: #e0e5c1; 
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+}
+
+.menu li:focus-within {
+    outline: 2px solid #585D27; 
+    background-color: #e8f0d9; 
+    border-radius: 8px;
+    border-radius: 8px;
+}
+
+.button-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 20px;
+    column-gap: 20px;
+    justify-items: center;
+    align-items: center;
+}
+
+.button {
+    background-color: #f8fff0;
+    border: 4px solid #585D27;
+    border-radius: 20px;
+    width: 565px;
+    height: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Montserrat-Bold', sans-serif;
+    color: #585D27;
+    text-decoration: none;
+    overflow: hidden; /* Ensure content doesn't spill out */
+    padding: 10px;
+}
+
+.button a {
+    text-decoration: none;
+    color: inherit; /* Ensure link color matches the button */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Make the link fill the button */
+    height: 100%; /* Ensure it spans the full height */
+    padding: 10px; /* Add some spacing inside the button */
+}
+
+.button span {
+    font-size: 30px;
+    flex: 1; /* Ensures proper alignment */
+    text-align: left;
+}
+
+.button div {
+    font-size: 30px;
+    font-weight: bold;
+    flex-shrink: 0; /* Prevents shrinking */
+    text-align: right;
+}
+
+.button img {
+    margin: 10px;
+    margin-right: 10px;
+}
+
+.button:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+#usersItineraryButton img {
+    width: 48px;
+    height: auto;
+}
