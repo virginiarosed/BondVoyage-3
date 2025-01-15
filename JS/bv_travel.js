@@ -1,11 +1,22 @@
 // Show the modal when 'Add Travel' is clicked
 document.getElementById('add-travel').addEventListener('click', function() {
+    //alert("1");
     document.getElementById('add-travel-modal').style.display = 'block';
 });
 
 // Close the modal when the close (X) button is clicked
 document.getElementById('close-modal-btn').addEventListener('click', function() {
     document.getElementById('add-travel-modal').style.display = 'none';
+});
+
+// Close the modal when the user clicks outside of it
+window.addEventListener('click', function(e) {
+    const addTravelModal = document.getElementById('add-travel-modal');
+    
+    // If the click target is not inside the modal content
+    if (e.target === addTravelModal) {
+        addTravelModal.style.display = 'none';
+    }
 });
 
 // Automatically close the modal when 'Add a New Travel' button is clicked
@@ -91,11 +102,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     travelWidget.classList.add('created-travel');
                     travelWidget.dataset.id = travel.id;
                     
+                    travelWidget.addEventListener('click', () => {
+                        const travelId = travelWidget.dataset.id; // Access the data-id attribute
+                        alert(`Travel widget with ID: ${travelId} clicked!`);
+                        // Redirect to a page, perform an action, etc.
+                        window.location.href = `../User_HTML/bv_itinerary.html?itinerary_id=${travel.id}`;
+                    });
+
                     // Create the travel widget content (name, logo)
                     travelWidget.innerHTML = `
                         <img src="../Images/bv_logo.png" alt="Travel Logo" class="travel-logo">
                         <span class="travel-name">${travel.travel_name}</span>
-                    `;
+                    `;  
 
                     // Create ellipsis menu for options (edit, delete, share code)
                     const ellipsisMenu = document.createElement('div');
@@ -136,6 +154,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => console.error('Error fetching travels:', error));
+
+        
+
 });
 
 // Handle the ellipsis menu actions
@@ -210,6 +231,7 @@ document.getElementById('confirm-delete-btn').addEventListener('click', function
 document.getElementById('edit-travel-form').addEventListener('submit', function(e) {
     e.preventDefault();  // Prevent form submission
 
+    alert("1");
     const newTravelName = document.getElementById('edit-travel-name').value;
     const travelId = document.getElementById('edit-travel-id').value;
 
@@ -301,7 +323,6 @@ document.getElementById('close-modal-btn').addEventListener('click', function() 
 });
 
 // Handle the "Join Travel" button click event
-// Handle the "Join Travel" button click event
 document.getElementById('submit-share-code-btn').addEventListener('click', function() {
     const shareCode = document.getElementById('share-code-input').value.trim(); // Get the input value
 
@@ -334,17 +355,11 @@ document.getElementById('submit-share-code-btn').addEventListener('click', funct
 // Create a role badge (either 'Creator' or 'Collaborator')
 const roleBadge = document.createElement('span');
 roleBadge.classList.add('role-badge');
-roleBadge.textContent = travel.role.charAt(0).toUpperCase() + travel.role.slice(1); // Capitalize the role name
-
-// Add specific class for creator or collaborator
-roleBadge.classList.add(travel.role); // Dynamically add 'creator' or 'collaborator' class
-
-// Append the role badge after the travel name
-travelWidget.appendChild(roleBadge);
+//roleBadge.textContent = travel.role.charAt(0).toUpperCase() + travel.role.slice(1); // Capitalize the role name
 
 // Toggle the visibility of the menu options when the ellipsis menu is clicked
-ellipsisMenu.addEventListener('click', function(event) {
-    const menu = travelWidget.querySelector('.menu-options');
-    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-});
+// ellipsisMenu.addEventListener('click', function(event) {
+//     const menu = travelWidget.querySelector('.menu-options');
+//     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+// });
 

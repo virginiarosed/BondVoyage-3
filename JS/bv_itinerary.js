@@ -1,3 +1,83 @@
+
+document.addEventListener("DOMContentLoaded", function () {
+    alert(1);
+    // Get itinerary_id from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const itineraryId = urlParams.get('itinerary_id'); // Assuming the URL is like: bv_itinerary.html?itinerary_id=123
+
+    if (!itineraryId) {
+        alert("Itinerary ID is missing!");
+        return;
+    }
+
+    // Fetch itinerary data from the server based on itinerary_id
+    fetch(`../PHP/get_itinerary.php?itinerary_id=` + itineraryId)
+        .then(response => response.json())
+        .then(data => {
+            //console.log("Response Data:", data);
+            document.getElementById("client-name").value = data.FullName
+            document.getElementById("destination").value = data.travel_name
+            // document.getElementById("start-date").value = "data.itinerary.start_date;"
+            // document.getElementById("end-date").value = data.itinerary.end_date;
+            // document.getElementById("lodging").value = data.itinerary.lodging;
+
+            // Dynamically generate days based on the fetched data
+            generateDayContainers(data.itinerary.days, data.itinerary.start_date);
+        })
+        .catch(error => {
+            console.error("Error fetching itinerary data:", error);
+        });
+    // Generate day containers dynamically
+    function generateDayContainers(days, startDate) {
+        const mainDayContainer = document.getElementById("main-day-container");
+        mainDayContainer.innerHTML = ""; // Clear existing containers
+
+        days.forEach((day, index) => {
+            const dayContainer = document.createElement("div");
+            dayContainer.classList.add("day-container");
+            dayContainer.innerHTML = `
+                <h3>Day ${index + 1}: ${day.date} (${day.dayOfWeek})</h3>
+                <div class="time-slots-container" id="time-slots-day-${index + 1}">
+                    <!-- Time slots will be added here -->
+                </div>
+                <button type="button" class="add-time-btn" data-day="${index + 1}">+ Add Time</button>
+            `;
+            mainDayContainer.appendChild(dayContainer);
+
+            // Populate time slots for the day
+            day.time_slots.forEach(slot => {
+                addTimeSlot(index + 1, slot.start_time, slot.end_time, slot.activity);
+            });
+        });
+    }
+
+    // Function to add a time slot to a day container
+    function addTimeSlot(dayNumber, startTime, endTime, activity) {
+        const timeSlotsContainer = document.getElementById(`time-slots-day-${dayNumber}`);
+        const timeSlotDiv = document.createElement("div");
+        timeSlotDiv.classList.add("time-slot");
+
+        timeSlotDiv.innerHTML = `
+            <div class="form-group time-slot-row">
+                <input type="time" name="time_range[${dayNumber}][]" value="${startTime}" required>
+                <input type="time" name="time_range[${dayNumber}][]" value="${endTime}" required>
+                <input type="text" name="activity[${dayNumber}][]" value="${activity}" placeholder="Activity..." required>
+                <button type="button" class="delete-time-btn">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        timeSlotsContainer.appendChild(timeSlotDiv);
+    }
+
+    // Add event listeners for time slot deletion
+    document.addEventListener('click', function (event) {
+        if (event.target && event.target.matches('.delete-time-btn')) {
+            event.target.closest('.time-slot').remove();
+        }
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const startDateInput = document.getElementById("start-date");
     const endDateInput = document.getElementById("end-date");
@@ -249,6 +329,7 @@ document.querySelector(".add-itinerary-btn").addEventListener("click", function 
     startDateInput.addEventListener("change", updateDuration);
     endDateInput.addEventListener("change", updateDuration);
 });
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const buttonContainer = document.getElementById('destination-buttons');
