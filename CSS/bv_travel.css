@@ -172,19 +172,19 @@ body, html {
   border-radius: 10px;
   position: relative;
   box-sizing: border-box;
-  flex-direction: column; 
-  cursor: pointer; 
+  flex-direction: column;
+  cursor: pointer;
 }
 
 .travel-widget .travel-logo {
-  width: 90px;  /* Set the logo width to 100px */
-  height: 90px; /* Set the logo height to 100px */
-  object-fit: contain; /* Ensure the logo scales without distortion */
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
   margin-bottom: 10px;
 }
 
 .travel-widget .travel-name {
-  font-family: 'Gusto-Bold', sans-serif; 
+  font-family: 'Gusto-Bold', sans-serif;
   color: #585D27;
   font-size: 30px;
 }
@@ -228,6 +228,11 @@ body, html {
   color: #585D27;
 }
 
+.travel-widget:hover {
+  transform: translateY(-5px); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 /* Hide the menu-options by default */
 .menu-options {
   display: none;
@@ -254,7 +259,7 @@ body, html {
   right: 5px;
   cursor: pointer;
   color: #585D27;
-  z-index: 101; /* Make sure the ellipsis icon is always above other elements */
+  z-index: 101; /* Ensure the ellipsis icon is always above other elements */
 }
 
 /* Ensure menu options only show when the ellipsis is hovered */
@@ -425,4 +430,149 @@ body, html {
 
 .menu-options .role-badge.collaborator {
     background-color: #FFC107; /* Yellow for collaborator */
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px; 
+  margin-top: 5px;
+}
+
+.itinerary-btn {
+  background-color: #585D27;
+  color: #fff8e1;
+  border: none;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 15px;
+  font-family: 'Montserrat-Medium', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.itinerary-btn:hover {
+  background-color: #A3C585;
+}
+
+.day-container {
+  margin-bottom: 20px;
+}
+
+.modal2 {
+  display: none; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  overflow: auto; 
+}
+
+.modal-content {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 40px;
+  background-image: url('../Images/bv_contentbg.png');
+  background-size: contain;
+  background-color: #fff8e1;
+  border-radius: 20px;
+  border: 10px solid #585D27;
+  width: 80%;
+  max-width: 750px;
+  max-height: 90%; 
+  height: auto; 
+  overflow-y: auto; 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.activity-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.activity-table th {
+  border: 1px solid #585D27;
+  padding: 8px;
+  text-align: center;
+  font-family: 'Montserrat-Bold', sans-serif;
+  width: 50px; 
+  word-wrap: break-word; 
+  overflow: hidden; 
+}
+
+.activity-table td {
+  border: 1px solid #585D27;
+  padding: 8px;
+  text-align: justify;
+  font-family: 'Montserrat-Regular', sans-serif;
+  font-size: 15px;
+}
+
+.activity-table th {
+  background-color: #585D27;
+  color: #f8fff0;
+}
+
+.activity-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.activity-table tr:hover {
+  background-color: #ddd;
+}
+
+.modal-content h1 {
+  font-family: 'Gusto-Bold', sans-serif;
+  color:  #585D27;
+  font-size: 65px;
+  text-shadow: 2px 2px 5px #f8fff0;
+  text-align: center;
+}
+
+.modal-content p {
+  font-family: 'Montserrat-Medium', sans-serif;
+  color: #585D27;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.modal-content h2 {
+  font-family: 'Montserrat-Bold', sans-serif;
+  color: #585D27;
+  font-size: 23px;
+  margin-bottom: 15px;
+}
+
+.modal-content ul {
+  font-family: 'Montserrat-Regular', sans-serif;
+  color: #585D27;
+  font-size: 18px;
+  line-height: 30px;
+  list-style-type: none;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #585D27;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  background: transparent;
+  font-size: 35px;
+}
+
+.modal-close:hover {
+  color: #A3C585;
 }
