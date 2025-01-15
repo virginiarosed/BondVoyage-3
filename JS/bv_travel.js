@@ -363,3 +363,169 @@ roleBadge.classList.add('role-badge');
 //     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
 // });
 
+// Fetch and display itineraries as buttons
+document.addEventListener("DOMContentLoaded", function () {
+    fetchItineraries();
+
+    function fetchItineraries() {
+        fetch('../PHP/fetch_itineraries.php')
+            .then(response => response.json())
+            .then(data => {
+                const itineraryButtons = document.getElementById('itinerary-buttons');
+                itineraryButtons.innerHTML = ''; // Clear any existing buttons
+
+                data.forEach(itinerary => {
+                    const button = document.createElement('button');
+                    button.textContent = `${itinerary.destination} (${itinerary.duration_days}D ${itinerary.duration_nights}N)`;
+                    button.classList.add('itinerary-btn');
+                    button.setAttribute('data-id', itinerary.id);
+                    itineraryButtons.appendChild(button);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching itineraries:', error);
+            });
+    }
+
+    // Event listener for itinerary button clicks
+    document.getElementById('itinerary-buttons').addEventListener('click', function (event) {
+        if (event.target.classList.contains('itinerary-btn')) {
+            const itineraryId = event.target.getAttribute('data-id');
+            fetch(`../PHP/fetch_itinerary_details.php?id=${itineraryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);  // Log the data to check the structure
+                    displayModal(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching itinerary details:', error);
+                });
+        }
+    });
+
+    function displayModal(data) {
+        const modal = document.getElementById('itinerary-modal');
+        const modalContent = document.getElementById('modal-content');
+        
+        // Check if data exists and log to debug
+        if (!data || !data.itinerary || !data.days) {
+            console.error('Invalid data received:', data);
+            return;
+        }
+    
+        // Populate modal with data
+        modalContent.innerHTML = `
+            <h1>${data.itinerary.destination}</h1>
+            <p><strong>Duration:</strong> ${data.itinerary.duration_days} Days ${data.itinerary.duration_nights} Nights</p>
+            <p style="margin-bottom: 30px;"><strong>Lodging:</strong> ${data.itinerary.lodging}</p>
+            <div id="schedule-container">
+                ${data.days.map(day => `
+                    <div class="day-container">
+                        <h2>Day ${day.day_number}</h2>
+                        <!-- Table for activities -->
+                        <table class="activity-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Activity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${day.activities.map(activity => `
+                                    <tr>
+                                        <td style="text-align: center; font-weight:">${activity.start_time} - ${activity.end_time}</td>
+                                        <td>${activity.activity}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `).join('')}
+            </div>
+            <button id="modal-close" class="modal-close">&times;</button> <!-- Close button inside the modal -->
+            <button id="delete-itinerary" class="delete-button"
+                style="display: block;
+                background-color: #585D27;
+                color: white;
+                padding: 10px 20px;
+                font-family: 'Montserrat-Medium', sans-serif;
+                font-size: 14px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                text-align: center;
+                margin-top: 20px;
+                margin-left: auto;
+                margin-right: auto;"
+                onmouseover="this.style.backgroundColor='#A3C585';"
+                onmouseout="this.style.backgroundColor='#585D27';">
+            Delete Itinerary
+        </button>
+        `;
+    
+        // Show modal
+        modal.style.display = 'block';
+        
+        // Close modal when the close button is clicked
+        document.getElementById('modal-close').addEventListener('click', function () {
+            modal.style.display = 'none';
+        });
+    
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    
+        // Adding event listener to the delete button inside the modal
+        document.getElementById('delete-itinerary').addEventListener('click', function() {
+            const itineraryId = data.itinerary.id; // Get the itinerary ID from the modal data
+            deleteItinerary(itineraryId);
+        });
+    }
+
+    // Function to delete itinerary
+// Function to delete itinerary
+function deleteItinerary(itineraryId) {
+    // Show a confirmation prompt
+    const isConfirmed = confirm("Are you sure you want to delete this itinerary?");
+    
+    // If the user confirms, proceed with the deletion
+    if (isConfirmed) {
+        fetch(`../PHP/delete_itinerary.php?id=${itineraryId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the deleted itinerary from the frontend
+                alert('Itinerary deleted successfully');
+                // Close the modal
+                document.getElementById('itinerary-modal').style.display = 'none';
+                // Optionally, remove the itinerary from the list if it's displayed elsewhere
+                const itineraryButton = document.querySelector(`[data-id="${itineraryId}"]`);
+                if (itineraryButton) {
+                    itineraryButton.remove(); // Remove the itinerary button
+                }
+            } else {
+                alert('Error deleting itinerary');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting itinerary:', error);
+            alert('An error occurred while deleting the itinerary');
+        });
+    } else {
+        // If the user cancels, do nothing
+        console.log("Deletion cancelled");
+    }
+}
+
+// Adding event listener to the delete button inside the modal
+document.getElementById('delete-itinerary').addEventListener('click', function() {
+    const itineraryId = data.itinerary.id; // Get the itinerary ID from the modal data
+    deleteItinerary(itineraryId);
+});
+
+});
