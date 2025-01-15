@@ -443,24 +443,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 `).join('')}
             </div>
             <button id="modal-close" class="modal-close">&times;</button> <!-- Close button inside the modal -->
-            <button id="delete-itinerary" class="delete-button"
-                style="display: block;
-                background-color: #585D27;
-                color: white;
-                padding: 10px 20px;
-                font-family: 'Montserrat-Medium', sans-serif;
-                font-size: 14px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                text-align: center;
-                margin-top: 20px;
-                margin-left: auto;
-                margin-right: auto;"
-                onmouseover="this.style.backgroundColor='#A3C585';"
-                onmouseout="this.style.backgroundColor='#585D27';">
-            Delete Itinerary
-        </button>
         `;
     
         // Show modal
@@ -484,48 +466,4 @@ document.addEventListener("DOMContentLoaded", function () {
             deleteItinerary(itineraryId);
         });
     }
-
-    // Function to delete itinerary
-// Function to delete itinerary
-function deleteItinerary(itineraryId) {
-    // Show a confirmation prompt
-    const isConfirmed = confirm("Are you sure you want to delete this itinerary?");
-    
-    // If the user confirms, proceed with the deletion
-    if (isConfirmed) {
-        fetch(`../PHP/delete_itinerary.php?id=${itineraryId}`, {
-            method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Remove the deleted itinerary from the frontend
-                alert('Itinerary deleted successfully');
-                // Close the modal
-                document.getElementById('itinerary-modal').style.display = 'none';
-                // Optionally, remove the itinerary from the list if it's displayed elsewhere
-                const itineraryButton = document.querySelector(`[data-id="${itineraryId}"]`);
-                if (itineraryButton) {
-                    itineraryButton.remove(); // Remove the itinerary button
-                }
-            } else {
-                alert('Error deleting itinerary');
-            }
-        })
-        .catch(error => {
-            console.error('Error deleting itinerary:', error);
-            alert('An error occurred while deleting the itinerary');
-        });
-    } else {
-        // If the user cancels, do nothing
-        console.log("Deletion cancelled");
-    }
-}
-
-// Adding event listener to the delete button inside the modal
-document.getElementById('delete-itinerary').addEventListener('click', function() {
-    const itineraryId = data.itinerary.id; // Get the itinerary ID from the modal data
-    deleteItinerary(itineraryId);
-});
-
 });
