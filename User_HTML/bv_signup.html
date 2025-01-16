@@ -32,8 +32,8 @@
                     <i class="fas fa-envelope email-icon"></i>
                 </div>                
                 <div class="form-group row">
-                    <input type="text" name="mobile" placeholder="Mobile Number" class="input-field half-width" required>
-                    <input type="date" name="birthday" placeholder="Birthday" class="input-field half-width" required>
+                    <input type="text" name="mobile" placeholder="Mobile Number (09*********)" class="input-field half-width" required>
+                    <input type="date" name="birthday" id="birthday" placeholder="Birthday" class="input-field half-width" required>
                 </div>
                 <div class="form-group row">
                     <div class="password-container">
@@ -72,7 +72,17 @@
                 </div>
                 <div id="password-error" style="color: red; display: none; font-size: 15px; text-align: center; margin: 0 auto; margin-bottom: -10px;">
                     <p>Passwords do not match</p>
-                </div>                
+                </div>
+                <div id="birthday-error" style="color: red; display: none; font-size: 15px; text-align: center; margin: 0 auto; margin-bottom: 10px;">
+                    <p>Invalid date. You must be at least 15 years old.</p>
+                </div>         
+                <div id="email-error" style="color: red; display: none; font-size: 15px; text-align: center; margin: 0 auto; margin-bottom: 10px;">
+                    <p>This email is already in use. Please choose another one.</p>
+                </div>     
+                <div id="mobile-error" style="color: red; display: none; font-size: 15px; text-align: center; margin: 0 auto; margin-bottom: 10px;">
+                    <p>Invalid mobile number format.<br>
+                        Please enter it as 09********* (e.g. 09123456789)</p>
+                </div>  
                 <div class="form-group">
                     <button type="button" class="next-button" onclick="showSecurityQuestions()">Next</button>
                 </div>
@@ -144,6 +154,9 @@
                         <div class="form-group recaptcha-container">
                             <div class="g-recaptcha" data-sitekey="6LdzmHcqAAAAACfqAFQK4QyibPiL2IOkMflLFbVT"></div>
                         </div>
+                        <div id="security-question-error" style="color: red; display: none; font-size: 15px; text-align: center; margin: 0 auto; margin-bottom: -10px;">
+                            <p>Please select unique security questions</p>
+                        </div>
                         <div class="form-group">
                             <button type="submit" class="signup-button">Sign Up</button>
                         </div>
@@ -154,151 +167,6 @@
         </form>
     </div>
 
-    <script>
-        // Toggle Password Visibility
-        document.getElementById('togglePassword').addEventListener('click', function () {
-            const passwordInput = document.querySelector('input[name="password"]');
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-        });
-
-        document.getElementById('togglePasswordConfirmation').addEventListener('click', function () {
-            const passwordConfirmationInput = document.querySelector('input[name="password_confirmation"]');
-            const type = passwordConfirmationInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordConfirmationInput.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash');
-        });
-
-        // Password Validation
-        const passwordInput = document.getElementById("password");
-        const passwordConfirmationInput = document.getElementById("password_confirmation");
-        const requirementList = document.querySelectorAll(".requirement-list li");
-
-        // Password requirements validation
-        const requirements = [
-            { regex: /.{8,}/, index: 0 }, // At least 8 characters
-            { regex: /[0-9]/, index: 1 }, // At least one number
-            { regex: /[a-z]/, index: 2 }, // At least one lowercase letter
-            { regex: /[^A-Za-z0-9]/, index: 3 }, // At least one special character
-            { regex: /[A-Z]/, index: 4 } // At least one uppercase letter
-        ];
-
-        // Show password requirements when password input is focused
-        passwordInput.addEventListener("focus", function () {
-            document.getElementById("password-requirements").style.display = 'block';
-        });
-
-        // Hide password requirements when focus is lost
-        passwordInput.addEventListener("blur", function () {
-            document.getElementById("password-requirements").style.display = 'none';
-        });
-
-        passwordInput.addEventListener("keyup", function () {
-            requirements.forEach(item => {
-                const isValid = item.regex.test(passwordInput.value);
-                const requirementItem = requirementList[item.index];
-                if (isValid) {
-                    requirementItem.classList.add("valid");
-                    requirementItem.firstElementChild.className = "fa-solid fa-check";
-                } else {
-                    requirementItem.classList.remove("valid");
-                    requirementItem.firstElementChild.className = "fa-solid fa-circle";
-                }
-            });
-        });
-
-        // Show Password Requirements when clicking "Next"
-        function showSecurityQuestions() {
-            const password = document.querySelector('input[name="password"]').value;
-            const passwordConfirmation = document.querySelector('input[name="password_confirmation"]').value;
-            const passwordError = document.getElementById('password-error');
-            
-            // Check if passwords match
-            if (password !== passwordConfirmation) {
-                passwordError.style.display = 'block'; // Show error message if passwords don't match
-                return; // Prevent transition to next section if passwords don't match
-            }
-
-            passwordError.style.display = 'none'; // Hide error message if passwords match
-
-            // Check if the password meets all the criteria
-            const isPasswordValid = requirements.every(item => item.regex.test(password));
-
-            // Display the password requirements if password is invalid
-            if (!isPasswordValid) {
-                document.getElementById('password-requirements').style.display = 'block'; // Show requirement list if invalid
-            } else {
-                document.getElementById('password-requirements').style.display = 'none'; // Hide requirement list if valid
-            }
-
-            // Prevent moving to next section if password is invalid
-            if (!isPasswordValid) {
-                return; // Don't proceed to the next section if password is invalid
-            }
-
-            // Move to the next section if everything is valid
-            document.getElementById('initial-questions').style.display = 'none';
-            document.getElementById('security-questions').style.display = 'block';
-            document.querySelector('.signup-form-container').classList.add('widened'); // Increase width
-        }
-
-        // Check password validity when the user types in the confirmation password field
-        passwordConfirmationInput.addEventListener("keyup", checkPasswordValidity);
-
-        // Check password validity for confirmation field
-        function checkPasswordValidity() {
-            const password = passwordInput.value;
-            const passwordConfirmation = passwordConfirmationInput.value;
-            const passwordError = document.getElementById('password-error');
-            
-            if (password !== passwordConfirmation) {
-                passwordError.style.display = 'block';
-            } else {
-                passwordError.style.display = 'none';
-            }
-        }
-
-        const emailInput = document.getElementById('email');
-        const emailIcon = document.querySelector('.email-icon');
-
-        emailInput.addEventListener('input', function () {
-            const emailValue = emailInput.value;
-            const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;  // Email validation regex
-
-            if (regex.test(emailValue)) {
-                emailIcon.classList.remove('fa-envelope');    // Remove default envelope icon
-                emailIcon.classList.add('fa-check-circle');  // Add check-circle icon
-                emailIcon.style.color = '#585D27';            // Change icon color to green (valid)
-            } else {
-                emailIcon.classList.remove('fa-check-circle'); // Remove check-circle icon
-                emailIcon.classList.add('fa-envelope');        // Add default envelope icon
-                emailIcon.style.color = 'red';                  // Change icon color to red (invalid)
-            }
-        });
-        
-        // Go Back to Initial Questions
-        function goBackToInitial() {
-            document.getElementById('initial-questions').style.display = 'block';
-            document.getElementById('security-questions').style.display = 'none';
-            document.querySelector('.signup-form-container').classList.remove('widened'); // Revert width
-        }
-
-        // Toggle the visibility of the input field for security question answers
-        function toggleSecurityQuestionInput(questionNumber) {
-            const selectElement = document.getElementById(`security_question_${questionNumber}`);
-            const answerContainer = document.getElementById(`security_answer_${questionNumber}_container`);
-            const answerInput = document.getElementById(`security_answer_${questionNumber}`);
-
-            // Always display the answer input when a question is selected
-            if (selectElement.value) {
-                answerContainer.style.display = 'block';
-                answerInput.style.display = 'block';
-            } else {
-                answerContainer.style.display = 'none';
-                answerInput.style.display = 'none';
-            }
-        }
-    </script>
+    <script src="../JS/bv_signup.js"></script>
 </body>
 </html>
