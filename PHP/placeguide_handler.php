@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Handle file uploads
         if (isset($_FILES['photos'])) {
-            $uploadDir = '../uploads/';
+            $uploadDir = 'uploads/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }

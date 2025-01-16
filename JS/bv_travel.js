@@ -9,16 +9,6 @@ document.getElementById('close-modal-btn').addEventListener('click', function() 
     document.getElementById('add-travel-modal').style.display = 'none';
 });
 
-// Close the modal when the user clicks outside of it
-window.addEventListener('click', function(e) {
-    const addTravelModal = document.getElementById('add-travel-modal');
-    
-    // If the click target is not inside the modal content
-    if (e.target === addTravelModal) {
-        addTravelModal.style.display = 'none';
-    }
-});
-
 // Automatically close the modal when 'Add a New Travel' button is clicked
 document.getElementById('create-travel-btn').addEventListener('click', function() {
     document.getElementById('add-travel-modal').style.display = 'none';
@@ -158,6 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
 
 });
+
+
 
 // Handle the ellipsis menu actions
 document.addEventListener('click', function(e) {
@@ -323,6 +315,7 @@ document.getElementById('close-modal-btn').addEventListener('click', function() 
 });
 
 // Handle the "Join Travel" button click event
+// Handle the "Join Travel" button click event
 document.getElementById('submit-share-code-btn').addEventListener('click', function() {
     const shareCode = document.getElementById('share-code-input').value.trim(); // Get the input value
 
@@ -357,113 +350,15 @@ const roleBadge = document.createElement('span');
 roleBadge.classList.add('role-badge');
 //roleBadge.textContent = travel.role.charAt(0).toUpperCase() + travel.role.slice(1); // Capitalize the role name
 
+// Add specific class for creator or collaborator
+//roleBadge.classList.add(travel.role); // Dynamically add 'creator' or 'collaborator' class
+
+// Append the role badge after the travel name
+//travelWidget.appendChild(roleBadge);
+
 // Toggle the visibility of the menu options when the ellipsis menu is clicked
 // ellipsisMenu.addEventListener('click', function(event) {
 //     const menu = travelWidget.querySelector('.menu-options');
 //     menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
 // });
 
-// Fetch and display itineraries as buttons
-document.addEventListener("DOMContentLoaded", function () {
-    fetchItineraries();
-
-    function fetchItineraries() {
-        fetch('../PHP/fetch_itineraries.php')
-            .then(response => response.json())
-            .then(data => {
-                const itineraryButtons = document.getElementById('itinerary-buttons');
-                itineraryButtons.innerHTML = ''; // Clear any existing buttons
-
-                data.forEach(itinerary => {
-                    const button = document.createElement('button');
-                    button.textContent = `${itinerary.destination} (${itinerary.duration_days}D ${itinerary.duration_nights}N)`;
-                    button.classList.add('itinerary-btn');
-                    button.setAttribute('data-id', itinerary.id);
-                    itineraryButtons.appendChild(button);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching itineraries:', error);
-            });
-    }
-
-    // Event listener for itinerary button clicks
-    document.getElementById('itinerary-buttons').addEventListener('click', function (event) {
-        if (event.target.classList.contains('itinerary-btn')) {
-            const itineraryId = event.target.getAttribute('data-id');
-            fetch(`../PHP/fetch_itinerary_details.php?id=${itineraryId}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);  // Log the data to check the structure
-                    displayModal(data);
-                })
-                .catch(error => {
-                    console.error('Error fetching itinerary details:', error);
-                });
-        }
-    });
-
-    function displayModal(data) {
-        const modal = document.getElementById('itinerary-modal');
-        const modalContent = document.getElementById('modal-content');
-        
-        // Check if data exists and log to debug
-        if (!data || !data.itinerary || !data.days) {
-            console.error('Invalid data received:', data);
-            return;
-        }
-    
-        // Populate modal with data
-        modalContent.innerHTML = `
-            <h1>${data.itinerary.destination}</h1>
-            <p><strong>Duration:</strong> ${data.itinerary.duration_days} Days ${data.itinerary.duration_nights} Nights</p>
-            <p style="margin-bottom: 30px;"><strong>Lodging:</strong> ${data.itinerary.lodging}</p>
-            <div id="schedule-container">
-                ${data.days.map(day => `
-                    <div class="day-container">
-                        <h2>Day ${day.day_number}</h2>
-                        <!-- Table for activities -->
-                        <table class="activity-table">
-                            <thead>
-                                <tr>
-                                    <th>Time</th>
-                                    <th>Activity</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${day.activities.map(activity => `
-                                    <tr>
-                                        <td style="text-align: center; font-weight:">${activity.start_time} - ${activity.end_time}</td>
-                                        <td>${activity.activity}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `).join('')}
-            </div>
-            <button id="modal-close" class="modal-close">&times;</button> <!-- Close button inside the modal -->
-        `;
-    
-        // Show modal
-        modal.style.display = 'block';
-        
-        // Close modal when the close button is clicked
-        document.getElementById('modal-close').addEventListener('click', function () {
-            modal.style.display = 'none';
-        });
-    
-        // Close modal when clicking outside of it
-        window.addEventListener('click', function (event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-    
-        // Adding event listener to the delete button inside the modal
-        document.getElementById('delete-itinerary').addEventListener('click', function() {
-            const itineraryId = data.itinerary.id; // Get the itinerary ID from the modal data
-            deleteItinerary(itineraryId);
-        });
-    }
-});

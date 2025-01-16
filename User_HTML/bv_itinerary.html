@@ -26,7 +26,7 @@
             <img src="../Images/itinerary_title.png" alt="Itinerary Title" class="itinerary-img">
 
             <div class="itinerary-container">
-                <form id="itinerary-form" method="POST" action="../PHP/submit_customized_itinerary.php"> <!--I stiil don't have submit_customized_itinerary.php file --!>
+                <form id="itinerary-form" method="POST" action="../PHP/submit_customized_itinerary.php">
                     <!-- Itinerary Form -->
                     <div class="itinerary-form">
                         <h1>Itinerary</h1>
@@ -74,18 +74,7 @@
                 </form>
                 <div class="guide-section">
                     <h1>PLACE GUIDE OFFERED BY<br>4B's Travel and Tours</h1>
-                        <div class="destination-buttons">
-                            <div id="destination-buttons" class="button-container">
-                                <!-- Dynamically generated destination buttons will appear here -->
-                            </div>
-                        </div>
-                        <div id="search-container" style="display: none;">
-                            <input type="text" id="search-input" placeholder="Search places..." />
-                            <i id="search-icon" class="fa fa-search"></i>
-                        </div>
-                        <div id="destination-data" class="data-container">
-                            <!-- Dynamically loaded destination data will appear here -->
-                        </div>
+                    <!-- Dynamic Place Guide will be fetched here -->
                 </div>     
             </div>
 
@@ -99,7 +88,8 @@
         </main>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="../JS/bv_itinerary.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
 </body>
 </html>

@@ -1,6 +1,5 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-    alert(1);
     // Get itinerary_id from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const itineraryId = urlParams.get('itinerary_id'); // Assuming the URL is like: bv_itinerary.html?itinerary_id=123
@@ -10,31 +9,102 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    $.ajax({
-        url: `../PHP/get_itinerary.php`,
-        method: 'GET',
-        data: { itinerary_id: itineraryId },
-        dataType: 'json',
-        success: function (data) {
+    // Fetch itinerary data from the server based on itinerary_id
+    // fetch(`../PHP/get_itinerary.php?itinerary_id=` + itineraryId)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         //console.log("Response Data:", data);
+    //         document.getElementById("client-name").value = data.FullName
+    //         document.getElementById("destination").value = data.travel_name
+    //         document.getElementById("start-date").value = data.lodging
+    //         // document.getElementById("end-date").value = data.itinerary.end_date;
+    //         // document.getElementById("lodging").value = data.itinerary.lodging;
 
-            console.log("Response Data:", data);
+    //         // Dynamically generate days based on the fetched data
+    //         generateDayContainers(data.itinerary.days, data.itinerary.start_date);
+    //     })
+    //     .catch(error => {
+    //         console.error("Error fetching itinerary data:", error);
+    //     });
 
-            $('#client-name').val(data.FullName);
-            $('#destination').val(data.travel_name);
-            // $('#start-date').val(data.itinerary.start_date);
-            // $('#end-date').val(data.itinerary.end_date);
-            // $('#lodging').val(data.itinerary.lodging);
-    
-            // Dynamically generate days based on the fetched data
-            generateDayContainers(data.itinerary?.days, data.itinerary?.start_date);
-        },
-        error: function (xhr, status, error) {
-            console.error("Error fetching itinerary data:", error);
-            console.error("XHR:", xhr);
-            console.error("Status:", status);
-        }
+    function checkForChanges() { 
+        $.ajax({
+            url: '../PHP/check_for_updates.php', // Path to the check change flag PHP file
+            type: 'GET',
+            data: { itinerary_id: itineraryId },
+            dataType: 'json',
+            success: function(data) {
+                console.log(data.status);
+                if (data.status === 'changed') {    
+                    // Data has changed, update the interface with new data
+                    fetchItineraryData();
+                }       
+            },
+            error: function(xhr, status, error) {
+                console.error("Error checking for changes:", error);
+            }
+        });
+    }
+
+    function extractDate(dateTimeString) {
+        return dateTimeString.split(' ')[0];  // Get the part before the space (YYYY-MM-DD)
+    }
+
+    function fetchItineraryData() {
+        $.ajax({
+            url: '../PHP/get_itinerary.php', // Path to your PHP file
+            type: 'GET',
+            data: { itinerary_id: itineraryId },
+            dataType: 'json',
+            success: function(data) {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    // Dynamically populate the form with data
+                    $('#client-name').val(data.FullName);
+                    $('#destination').val(data.travel_name);
+                    $('#start-date').val(extractDate(data.start_date));
+                    $('#end-date').val(extractDate(data.end_date));
+                    $('#lodging').val(data.lodging);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching itinerary data:", error);
+            }
+        });
+    }  
+
+    setInterval(checkForChanges, 1000); 
+    fetchItineraryData();
+
+    function updateDataOnMouseUp() {
+        var startDate = $('#start-date').val();
+        var endDate = $('#end-date').val();
+        var lodging = $('#lodging').val();
+
+        // AJAX call to update the database
+        $.ajax({
+            url: '../PHP/update_data.php', // PHP file that will handle the database update
+            type: 'POST',
+            data: {
+                itinerary_id: itineraryId,
+                startDate: $('#start-date').val(),
+                endDate: $('#end-date').val(),
+                lodging: $('#lodging').val()
+            },
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                console.log("Error: " + error);
+            }
+        });
+    }
+
+    $('#start-date, #end-date, #lodging').on('keyup', function() {
+        updateDataOnMouseUp();
     });
-    
+
     // Generate day containers dynamically
     function generateDayContainers(days, startDate) {
         const mainDayContainer = document.getElementById("main-day-container");
@@ -311,7 +381,7 @@ document.querySelector(".add-itinerary-btn").addEventListener("click", function 
 
     const formData = new FormData(form);
 
-    fetch('../PHP/submit_customized_itinerary.php', { // I still don't have submit_customized_itinerary.php file
+    fetch('submit_customized_itinerary.php', { // I still don't have submit_customized_itinerary.php file
         method: 'POST',
         body: formData
     })
@@ -336,90 +406,4 @@ document.querySelector(".add-itinerary-btn").addEventListener("click", function 
     // Add event listeners
     startDateInput.addEventListener("change", updateDuration);
     endDateInput.addEventListener("change", updateDuration);
-});
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    const buttonContainer = document.getElementById('destination-buttons');
-    const dataContainer = document.getElementById('destination-data');
-    const searchContainer = document.getElementById('search-container');
-    const searchInput = document.getElementById('search-input');
-
-    // Fetch destinations and create buttons
-    fetch('../PHP/placeguide_handler.php?action=get_destinations')  // Modify if needed based on your server-side logic
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                data.destinations.forEach(destination => {
-                    const button = document.createElement('button');
-                    button.textContent = destination;
-                    button.classList.add('destination-button');
-                    button.onclick = () => {
-                        loadDestinationData(destination);
-                        setActiveButton(button); // Set this button as active
-                        toggleSearchBar(true); // Show the search bar
-                    };
-                    buttonContainer.appendChild(button);
-                });
-            }
-        })
-        .catch(error => console.error('Error fetching destinations:', error));
-
-    // Function to load destination data
-    function loadDestinationData(destination) {
-        fetch(`../PHP/placeguide_handler.php?action=get_places&destination=${encodeURIComponent(destination)}&search=${searchInput.value}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    displayDestinationData(destination, data.places);
-                } else {
-                    dataContainer.innerHTML = `<p>No data available for ${destination}.</p>`;
-                }
-            })
-            .catch(error => console.error('Error fetching places:', error));
-    }
-
-    // Function to display destination data
-    function displayDestinationData(destination, places) {
-        dataContainer.innerHTML = `<h2 class="destination-title">Places in ${destination}</h2>`;
-        places.forEach(place => {
-            const placeDiv = document.createElement('div');
-            placeDiv.classList.add('place-item');
-
-            placeDiv.innerHTML = `
-                <h3>${place.place_name}</h3>
-                <p><strong>Location:<br></strong> ${place.location}</p>
-                <p><strong>Description:<br></strong> ${place.description}</p>
-                <p><strong>Activities:</strong> ${place.activitiesHtml}</p>
-                <div class="images">
-                    ${place.images.map(image => `<img src="../uploads/${image}" alt="Place image" class="place-image">`).join('')}
-                </div>
-            `;
-            dataContainer.appendChild(placeDiv);
-        });
-    }
-
-    // Function to set the active button
-    function setActiveButton(button) {
-        const allButtons = document.querySelectorAll('.destination-button');
-        allButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-    }
-
-    // Function to toggle the search bar visibility
-    function toggleSearchBar(show) {
-        if (show) {
-            searchContainer.style.display = 'block';
-        } else {
-            searchContainer.style.display = 'none';
-        }
-    }
-
-    // Real-time search
-    searchInput.addEventListener('input', function () {
-        const destination = document.querySelector('.destination-button.active');
-        if (destination) {
-            loadDestinationData(destination.textContent);  // Trigger search with the current active destination
-        }
-    });
 });

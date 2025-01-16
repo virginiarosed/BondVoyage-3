@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <p><strong>Description:<br></strong> ${place.description}</p>
     <p><strong>Activities:</strong> ${place.activitiesHtml}</p>
     <div class="images">
-    ${place.images.map(image => `<img src="../uploads/${image}" alt="Place image" class="place-image">`).join('')}
+        ${place.images.map(image => `<img src="/for_project/${image}" alt="Place image" class="place-image">`).join('')}
     </div>
 `;
 
@@ -308,77 +308,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
-
-document.addEventListener("DOMContentLoaded", () => {
-    const placeNameInput = document.getElementById("place-name");
-    const placeNameError = document.getElementById("place-name-error");
-
-    // Check real-time input as the user types
-    placeNameInput.addEventListener("keyup", () => {
-        const value = placeNameInput.value;
-        const specialCharRegex = /^[^a-zA-Z0-9]/; // Matches if the first character is not a letter or digit
-
-        // Show the error if the first character is a space or a special character
-        if (value.startsWith(" ") || specialCharRegex.test(value)) {
-            placeNameError.style.display = "block";
-        } else {
-            placeNameError.style.display = "none";
-        }
-    });
-
-    // Check the field when it loses focus (blur event)
-    placeNameInput.addEventListener("blur", () => {
-        const value = placeNameInput.value.trim();
-        const specialCharRegex = /^[^a-zA-Z0-9]/; // Matches if the first character is not a letter or digit
-
-        // Show the error if the input starts with a special character or is too short
-        if (value.length === 1 || specialCharRegex.test(value)) {
-            placeNameError.style.display = "block";
-        } else {
-            placeNameError.style.display = "none";
-        }
-    });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const locationInput = document.getElementById("location");
-    const locationError = document.getElementById("location-error");
-
-    // Check real-time input as the user types
-    locationInput.addEventListener("keyup", () => {
-        const value = locationInput.value;
-        const specialCharRegex = /^[^a-zA-Z0-9]/; // Matches if the first character is not a letter or digit
-
-        // Show the error if the first character is a space or a special character
-        if (value.startsWith(" ") || specialCharRegex.test(value)) {
-            locationError.style.display = "block";
-        } else {
-            locationError.style.display = "none";
-        }
-    });
-
-    // Check the field when it loses focus (blur event)
-    locationInput.addEventListener("blur", () => {
-        const value = locationInput.value.trim();
-        const specialCharRegex = /^[^a-zA-Z0-9]/; // Matches if the first character is not a letter or digit
-
-        // Show the error if the input starts with a special character or is too short (1 character)
-        if (value.length === 1 || specialCharRegex.test(value)) {
-            locationError.style.display = "block";
-        } else {
-            locationError.style.display = "none";
-        }
-    });
-});
-
-function validateFiles() {
-    const fileInput = document.getElementById("photos");
-    const errorDiv = document.getElementById("file-error");
-
-    if (fileInput.files.length === 0) {
-        errorDiv.style.display = "block";  // Show error if no files selected
-        return false;  // Prevent form submission
-    }
-    errorDiv.style.display = "none";  // Hide error if files are selected
-    return true;  // Allow form submission
-}

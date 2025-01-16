@@ -9,7 +9,16 @@ include('../PHP/db_connection.php');
 $itinerary_id = $_GET['itinerary_id'];
 
 // Query to fetch user details
-$sql = "SELECT T1.id, concat(first_name,' ',last_name) FullName, travel_name, share_code, T1.created_at FROM create_travel T1 LEFT JOIN users T2 on T1.user_id = T2.id WHERE T1.id = ?";
+$sql = "SELECT 
+        T1.id, 
+        concat(first_name,' ',last_name) FullName, 
+        travel_name, 
+        share_code,
+        T1.created_at,
+        lodging, 
+        start_date,
+        end_date
+        FROM create_travel T1 LEFT JOIN users T2 on T1.user_id = T2.id WHERE T1.id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $itinerary_id);
 $stmt->execute();
