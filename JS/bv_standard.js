@@ -1,30 +1,40 @@
-// Function to calculate and display the duration text and generate day input containers
 function updateDurationTextAndDays() {
     const days = document.getElementById('duration-days').value;
     const nights = document.getElementById('duration-nights').value;
     const durationDisplay = document.getElementById('duration-text');
+    const dayContainer = document.getElementById('main-day-container');
 
-    if (days && nights >= 0) {
+    // Check if the number of days is 1 and the number of nights is 0
+    if (days == 1 && nights == 0) {
+        durationDisplay.innerHTML = `<strong>Duration:</strong> Roundtrip`;
+        // Ensure Day 1 container is still generated
+        dayContainer.innerHTML = ''; // Clear previous day containers
+        const newDayContainer = document.createElement('div');
+        newDayContainer.classList.add('day-input-container');
+        newDayContainer.innerHTML = `
+            <div class="day-container" data-day="1">
+                <h3>Day 1</h3>
+                <div class="time-slot-container" data-day="1"></div>
+                <button type="button" class="add-time-btn" data-day="1">+ Add Time</button>
+            </div>
+        `;
+        dayContainer.appendChild(newDayContainer);
+    } else if (days && nights >= 0) {
         durationDisplay.innerHTML = `<strong>Duration:</strong> ${days} Days, ${nights} Nights`;
 
         // Generate the day input containers dynamically based on the number of days
-        const dayContainer = document.getElementById('main-day-container');
         dayContainer.innerHTML = ''; // Clear previous day containers
 
         for (let i = 1; i <= days; i++) {
             const newDayContainer = document.createElement('div');
             newDayContainer.classList.add('day-input-container');
-
             newDayContainer.innerHTML = `
                 <div class="day-container" data-day="${i}">
                     <h3>Day ${i}</h3>
-                    <!-- Empty div for the time slot and activity fields (initially empty) -->
                     <div class="time-slot-container" data-day="${i}"></div>
-                    <!-- Add Time button moved below the input fields -->
                     <button type="button" class="add-time-btn" data-day="${i}">+ Add Time</button>
                 </div>
             `;
-
             dayContainer.appendChild(newDayContainer);
         }
     } else {
@@ -210,46 +220,144 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Function to delete itinerary
-// Function to delete itinerary
-function deleteItinerary(itineraryId) {
-    // Show a confirmation prompt
-    const isConfirmed = confirm("Are you sure you want to delete this itinerary?");
-    
-    // If the user confirms, proceed with the deletion
-    if (isConfirmed) {
-        fetch(`../PHP/delete_itinerary.php?id=${itineraryId}`, {
-            method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Remove the deleted itinerary from the frontend
-                alert('Itinerary deleted successfully');
-                // Close the modal
-                document.getElementById('itinerary-modal').style.display = 'none';
-                // Optionally, remove the itinerary from the list if it's displayed elsewhere
-                const itineraryButton = document.querySelector(`[data-id="${itineraryId}"]`);
-                if (itineraryButton) {
-                    itineraryButton.remove(); // Remove the itinerary button
+    function deleteItinerary(itineraryId) {
+        // Show a confirmation prompt
+        const isConfirmed = confirm("Are you sure you want to delete this itinerary?");
+        
+        // If the user confirms, proceed with the deletion
+        if (isConfirmed) {
+            fetch(`../PHP/delete_itinerary.php?id=${itineraryId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the deleted itinerary from the frontend
+                    alert('Itinerary deleted successfully');
+                    // Close the modal
+                    document.getElementById('itinerary-modal').style.display = 'none';
+                    // Optionally, remove the itinerary from the list if it's displayed elsewhere
+                    const itineraryButton = document.querySelector(`[data-id="${itineraryId}"]`);
+                    if (itineraryButton) {
+                        itineraryButton.remove(); // Remove the itinerary button
+                    }
+                } else {
+                    alert('Error deleting itinerary');
                 }
-            } else {
-                alert('Error deleting itinerary');
-            }
-        })
-        .catch(error => {
-            console.error('Error deleting itinerary:', error);
-            alert('An error occurred while deleting the itinerary');
-        });
-    } else {
-        // If the user cancels, do nothing
-        console.log("Deletion cancelled");
+            })
+            .catch(error => {
+                console.error('Error deleting itinerary:', error);
+                alert('An error occurred while deleting the itinerary');
+            });
+        } else {
+            // If the user cancels, do nothing
+            console.log("Deletion cancelled");
+        }
     }
-}
 
-// Adding event listener to the delete button inside the modal
-document.getElementById('delete-itinerary').addEventListener('click', function() {
-    const itineraryId = data.itinerary.id; // Get the itinerary ID from the modal data
-    deleteItinerary(itineraryId);
+    // Adding event listener to the delete button inside the modal
+    document.getElementById('delete-itinerary').addEventListener('click', function() {
+        const itineraryId = data.itinerary.id; // Get the itinerary ID from the modal data
+        deleteItinerary(itineraryId);
+    });
+
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+    const daysInput = document.getElementById("duration-days");
+    const nightsInput = document.getElementById("duration-nights");
+    const errorDiv = document.getElementById("duration-error");
+    const submitButton = document.getElementById("submit-button");
+
+    // Consolidated validation function
+    function validateDuration() {
+        const days = parseInt(daysInput.value, 10);
+        const nights = parseInt(nightsInput.value, 10);
+
+        console.log("Days:", days, "Nights:", nights); // Debugging log
+
+        // Check if both fields are filled in
+        if (isNaN(days) || isNaN(nights)) {
+            errorDiv.style.display = "none"; // Do not show the error if inputs are incomplete
+            submitButton.disabled = true; // Disable the submit button until both fields are filled
+        } else if (days <= nights || nights !== days - 1) {
+            errorDiv.style.display = "block"; // Show the error message for invalid duration
+            submitButton.disabled = true; // Disable the submit button for invalid inputs
+        } else {
+            errorDiv.style.display = "none"; // Hide the error message for valid duration
+            submitButton.disabled = false; // Enable the submit button for valid inputs
+        }
+    }
+
+    // Single event listener for both inputs
+    [daysInput, nightsInput].forEach(input => {
+        input.addEventListener("input", validateDuration);
+    });
+
+    // Validate on page load in case of pre-filled values
+    validateDuration();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const destinationInput = document.getElementById("destination");
+    const destinationError = document.getElementById("destination-error");
+
+    destinationInput.addEventListener("keyup", () => {
+        const value = destinationInput.value;
+        const specialCharRegex = /^[^a-zA-Z0-9]/; // Matches if the first character is not a letter or digit
+
+        // Show the error immediately if the first character is a space or a special character
+        if (value.startsWith(" ") || specialCharRegex.test(value)) {
+            destinationError.style.display = "block";
+        } else {
+            destinationError.style.display = "none";
+        }
+    });
+
+    destinationInput.addEventListener("blur", () => {
+        const value = destinationInput.value.trim();
+        const specialCharRegex = /^[^a-zA-Z0-9]/; // Matches if the first character is not a letter or digit
+
+        // Show the error if the input has only one character or starts with a special character
+        if (value.length === 1 || specialCharRegex.test(value)) {
+            destinationError.style.display = "block";
+        } else {
+            destinationError.style.display = "none";
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const lodgingInput = document.getElementById("lodging");
+    const lodgingError = document.getElementById("lodging-error");
+
+    // Regular expression to check for special characters at the start
+    const specialCharRegex = /^[^a-zA-Z0-9]/; // Starts with a special character or space
+
+    // Event listener for real-time validation on keyup
+    lodgingInput.addEventListener("keyup", () => {
+        const value = lodgingInput.value;
+
+        // Check if the input starts with a space or special character
+        if (value.startsWith(" ") || specialCharRegex.test(value)) {
+            lodgingError.style.display = "block";  // Show the error message
+        } else {
+            lodgingError.style.display = "none";   // Hide the error message
+        }
+    });
+
+    // Event listener for blur event (when the user leaves the field)
+    lodgingInput.addEventListener("blur", () => {
+        const value = lodgingInput.value.trim();  // Trim any extra spaces
+        if (value.length === 0 || specialCharRegex.test(value)) {
+            lodgingError.style.display = "block";  // Show the error if the input is empty or invalid
+        } else {
+            lodgingError.style.display = "none";   // Hide the error if the input is valid
+        }
+    });
+});
+
+const submitButton = document.querySelector("#submit-button");
+destinationInput.addEventListener("keyup", () => {
+    submitButton.disabled = isInvalid;
 });

@@ -461,6 +461,23 @@ body, html {
   margin-bottom: 20px;
 }
 
+.day-container {
+  margin-bottom: 20px;
+  padding: 25px;
+  border: 4px dashed #585D27;
+  border-radius: 20px;
+  background-color: #f8fff0;
+  font-family: 'Montserrat-Bold', sans-serif;
+  color: #585D27;
+  font-size: 19px;
+}
+
+.day-container h3 {
+  font-family: 'Montserrat-Bold', sans-serif;
+  color: #585D27;
+  margin-bottom: 15px;
+}
+
 .modal2 {
   display: none; 
   position: fixed;

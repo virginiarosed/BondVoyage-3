@@ -33,7 +33,7 @@
                         <h1>Add Place Guide</h1>
                         
                         <label for="destination">Destination:</label>
-                        <select id="destination" name="destination">
+                        <select id="destination" name="destination" required>
                             <option value="" disabled selected>Choose a destination</option>
                             <option value="Ilocos">Ilocos</option>
                             <option value="Baguio">Baguio</option>
@@ -47,9 +47,15 @@
 
                         <label for="place-name">Place Name:</label>
                         <input type="text" id="place-name" name="place-name" required>
+                        <div id="place-name-error" style="color: red; display: none; font-size: 15px; text-align: center; margin: 0 auto; margin-bottom: 5px;">
+                            <p>Place name cannot start with a space or special character and must be longer than one letter.</p>
+                        </div>
 
                         <label for="location">Location:</label>
                         <input type="text" id="location" name="location" required>
+                        <div id="location-error" style="color: red; display: none; font-size: 15px; text-align: center; margin: 0 auto; margin-bottom: 5px;">
+                            <p>Location name cannot start with a space or special character and must be longer than one letter.</p>
+                        </div>
 
                         <label for="place-description">Place Description:</label>
                         <textarea id="place-description" name="place-description" required></textarea>
@@ -58,7 +64,7 @@
                         <textarea id="activities" name="activities" placeholder="Enter each activity on a new line." required></textarea>
 
                         <label for="photos">Upload Photos:</label>
-                        <input type="file" id="photos" name="photos[]" multiple onchange="previewImages()">
+                        <input type="file" id="photos" name="photos[]" multiple onchange="previewImages()" required>
 
                         <div class="image-preview-container">
                             <div id="image-preview"></div>
@@ -66,7 +72,10 @@
                                 <button type="button" id="add-photo-btn" onclick="triggerFileInput()" style="display: none;">+ Photo</button>
                             </div>
                         </div>
-
+                        <div id="file-error" style="color: red; display: none; font-size: 15px; text-align: center; margin: 0 auto; margin-bottom: 5px;">
+                            <p>Please select at least one image.</p>
+                        </div>
+                        
                         <div id="success-message"></div>
                         <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
                         <button type="submit" id="add-place">Add Place</button>

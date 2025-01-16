@@ -289,3 +289,7 @@ button {
 button:hover {
     background-color: #4A4F1F;
 }
+
+audio {
+    display: none;
+}

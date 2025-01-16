@@ -1,6 +1,4 @@
-
 document.addEventListener("DOMContentLoaded", function () {
-    alert(1);
     // Get itinerary_id from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const itineraryId = urlParams.get('itinerary_id'); // Assuming the URL is like: bv_itinerary.html?itinerary_id=123
@@ -10,31 +8,28 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    $.ajax({
-        url: `../PHP/get_itinerary.php`,
-        method: 'GET',
-        data: { itinerary_id: itineraryId },
-        dataType: 'json',
-        success: function (data) {
+    // Fetch itinerary data from the server based on itinerary_id
+    fetch(`/PHP/get_itinerary.php?itinerary_id=${itineraryId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Populate the form with the fetched data
+                document.getElementById("client-name").value = data.itinerary.client_name;
+                document.getElementById("destination").value = data.itinerary.destination;
+                document.getElementById("start-date").value = data.itinerary.start_date;
+                document.getElementById("end-date").value = data.itinerary.end_date;
+                document.getElementById("lodging").value = data.itinerary.lodging;
 
-            console.log("Response Data:", data);
-
-            $('#client-name').val(data.FullName);
-            $('#destination').val(data.travel_name);
-            // $('#start-date').val(data.itinerary.start_date);
-            // $('#end-date').val(data.itinerary.end_date);
-            // $('#lodging').val(data.itinerary.lodging);
-    
-            // Dynamically generate days based on the fetched data
-            generateDayContainers(data.itinerary?.days, data.itinerary?.start_date);
-        },
-        error: function (xhr, status, error) {
+                // Dynamically generate days based on the fetched data
+                generateDayContainers(data.itinerary.days, data.itinerary.start_date);
+            } else {
+                alert("Failed to fetch itinerary data.");
+            }
+        })
+        .catch(error => {
             console.error("Error fetching itinerary data:", error);
-            console.error("XHR:", xhr);
-            console.error("Status:", status);
-        }
-    });
-    
+        });
+
     // Generate day containers dynamically
     function generateDayContainers(days, startDate) {
         const mainDayContainer = document.getElementById("main-day-container");
@@ -311,7 +306,7 @@ document.querySelector(".add-itinerary-btn").addEventListener("click", function 
 
     const formData = new FormData(form);
 
-    fetch('../PHP/submit_customized_itinerary.php', { // I still don't have submit_customized_itinerary.php file
+    fetch('submit_customized_itinerary.php', { // I still don't have submit_customized_itinerary.php file
         method: 'POST',
         body: formData
     })
@@ -337,7 +332,6 @@ document.querySelector(".add-itinerary-btn").addEventListener("click", function 
     startDateInput.addEventListener("change", updateDuration);
     endDateInput.addEventListener("change", updateDuration);
 });
-
 
 document.addEventListener('DOMContentLoaded', function () {
     const buttonContainer = document.getElementById('destination-buttons');
